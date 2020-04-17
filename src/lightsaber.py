@@ -1,5 +1,6 @@
 import os, random
 from PIL import Image
+import tweepy
 from manifest import MANIFEST
 
 IMAGE_PATH = "../images"
@@ -54,4 +55,20 @@ def generate_lightsaber():
     img.paste(hilt, hilt_offset, mask=hilt)
     img.save("{}/{}.png".format(OUTPUT_PATH, output_filename))
 
-generate_lightsaber()
+    return img, "{}/{}.png".format(OUTPUT_PATH, output_filename)
+
+
+consumer_key = os.getenv('CONSUMER_KEY')
+consumer_secret = os.getenv('CONSUMER_SECRET')
+
+access_token = os.getenv('ACCESS_TOKEN')
+access_token_secret = os.getenv('ACCESS_TOKEN_SECRET')
+
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+api = tweepy.API(auth)
+
+lightsaber, path = generate_lightsaber()
+#media = api.media_upload(path)
+#api.update_status(media_ids=[media.media_id,])
