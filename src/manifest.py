@@ -118,10 +118,10 @@ MANIFEST = {
             "length": 5,
         },
         "p2": {
-            "length": 3,
+            "length": 14,
         },
         "p3": {
-            "length": 14,
+            "length": 3,
         },
         "p4": {
             "length": 8,
