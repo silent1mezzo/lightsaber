@@ -4,20 +4,30 @@ MANIFEST = {
             "offsets": {
                 "blade": 0,
                 "button": {
-                    "x": (500, 505),
-                    "y": (450, 460)
+                    "x": (8, 9),
+                    "y": (110, 111)
                 }
+            },
+            "colours": {
+                "primary": (216,216,216), #d8d8d8
+                "secondary": (141,141,141), #8d8d8d
+                "tertiary": (180, 97, 19), #b46113
             },
             "length": 28,
             "materials": "Alloy metal/Salvaged materials"
         },
         "h2": {
             "offsets": {
-                "blade": 17,
+                "blade": 20,
                 "button": {
-                    "x": (500, 505),
-                    "y": (408, 420)
+                    "x": (8, 8),
+                    "y": (100, 105)
                 }
+            },
+            "colours": {
+                "primary": (112, 112, 112), #707070
+                "secondary": (0, 0, 0), #000000
+                "tertiary": (212, 175, 55) #000000
             },
             "length": 28,
             "materials": "Alloy metal and carbon composite"
@@ -26,9 +36,14 @@ MANIFEST = {
             "offsets": {
                 "blade": 0,
                 "button": {
-                    "x": (509, 510),
-                    "y": (395, 470)
+                    "x": (10, 10),
+                    "y": (100, 118)
                 }
+            },
+            "colours": {
+                "primary": (157,157,157), #707070
+                "secondary": (0, 0, 0), #000000
+                "tertiary": (180, 97, 19), #b46113
             },
             "length": 28,
             "materials": "Alloy metal"
@@ -37,9 +52,14 @@ MANIFEST = {
             "offsets": {
                 "blade": 7,
                 "button": {
-                    "x": (500, 50),
-                    "y": (450, 460)
+                    "x": (8, 9),
+                    "y": (92, 100)
                 }
+            },
+            "colours": {
+                "primary": (0, 0, 0), #000000
+                "secondary": (157, 157, 157), #9d9d9d
+                "tertiary": (180, 97, 19), #b46113
             },
             "length": 15,
             "materials": "Alloy metal"
@@ -91,6 +111,20 @@ MANIFEST = {
             "colour": "Black",
             "crystal": "Obsidian",
             "type": ["Jedi", "Mandalorian"]
+        },
+    },
+    "pommel": {
+        "p1": {
+            "length": 5,
+        },
+        "p2": {
+            "length": 3,
+        },
+        "p3": {
+            "length": 14,
+        },
+        "p4": {
+            "length": 8,
         },
     },
     # These are lightsabers for a specific Jedi or Sith. Should use their name instead of 
