@@ -14,7 +14,7 @@ OUTPUT_PATH = "{}/lightsabers".format(IMAGE_PATH)
 
 AVERAGE_HILT_LENGTH = 25
 AVERAGE_POMMEL_LENGTH = 3
-AVERAGE_BLADE_LENGTH = 300
+AVERAGE_BLADE_LENGTH = 90
 
 def generate_tweet_text(hilt, blade, pommel):
     hilt = hilt.split('.')[0]
