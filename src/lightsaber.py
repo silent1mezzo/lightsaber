@@ -1,6 +1,7 @@
 import os, random
 from PIL import Image
 import numpy as np
+import argparse
 import tweepy
 from manifest import MANIFEST
 from name import NAMES
@@ -65,11 +66,26 @@ def convert_colours(img, hilt):
 
     return Image.fromarray(data)
 
-def fetch_lightsaber_parts():
-    blade = "{}/{}".format(BLADE_PATH, random.choice(os.listdir(BLADE_PATH)))
-    hilt = "{}/{}".format(HILT_PATH, random.choice(os.listdir(HILT_PATH)))
-    button = "{}/{}".format(BUTTON_PATH, random.choice(os.listdir(BUTTON_PATH)))
-    pommel = "{}/{}".format(POMMEL_PATH, random.choice(os.listdir(POMMEL_PATH)))
+def fetch_lightsaber_parts(hilt, blade, button, pommel):
+    if hilt != '.':
+        hilt = "{}/{}".format(HILT_PATH, hilt)
+    else:
+        hilt = "{}/{}".format(HILT_PATH, random.choice(os.listdir(HILT_PATH)))
+
+    if blade != '.':
+        blade = "{}/{}".format(BLADE_PATH, blade)
+    else:
+        blade = "{}/{}".format(BLADE_PATH, random.choice(os.listdir(BLADE_PATH)))
+
+    if button != '.':
+        button = "{}/{}".format(BUTTON_PATH, button)
+    else:
+        button = "{}/{}".format(BUTTON_PATH, random.choice(os.listdir(BUTTON_PATH)))
+
+    if pommel != '.':
+        pommel = "{}/{}".format(POMMEL_PATH, pommel)
+    else:
+        pommel = "{}/{}".format(POMMEL_PATH, random.choice(os.listdir(POMMEL_PATH)))
 
     return (blade, hilt, button, pommel)
 
@@ -92,12 +108,15 @@ def get_button_offset(hilt, pommel, button_w, button_h):
     between_y = MANIFEST['hilt'][hilt_name]['offsets']['button']['y']
     return (random.randint(between_x[0], between_x[1]), random.randint(between_y[0], between_y[1]))
 
-def generate_lightsaber():
-    hilt_name = blade_name = button_name = pommel_name = '.'
+def generate_lightsaber(hilt, blade, button, pommel):
+    hilt_name = hilt
+    blade_name = blade
+    button_name = button
+    pommel_name = pommel
     output_filename = ''
 
     while blade_name.startswith('.') == True or hilt_name.startswith('.') == True or button_name.startswith('.') == True or pommel_name.startswith('.') == True or f"{output_filename}.png" in os.listdir(OUTPUT_PATH):
-        blade_path, hilt_path, button_path, pommel_path = fetch_lightsaber_parts()
+        blade_path, hilt_path, button_path, pommel_path = fetch_lightsaber_parts(hilt, blade, button, pommel)
         blade_name = fetch_name(blade_path)
         hilt_name = fetch_name(hilt_path)
         button_name = fetch_name(button_path)
@@ -151,20 +170,34 @@ def generate_lightsaber():
 
     return img, "{}/{}.png".format(OUTPUT_PATH, output_filename), (hilt_name, blade_name, pommel_name)
 
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--debug', action='store_true', help='Should this be run in debug mode')
+    parser.add_argument('--open', action='store_true', help='Open the files automatically')
+    parser.add_argument('--hilt', nargs='?', default='.', help='Use a specific hilt')
+    parser.add_argument('--blade', nargs='?', default='.', help='Use a specific blade')
+    parser.add_argument('--pommel', nargs='?', default='.', help='Use a specific pommel')
+    parser.add_argument('--button', nargs='?', default='.', help='Use a specific button')
 
-consumer_key = os.getenv('CONSUMER_KEY')
-consumer_secret = os.getenv('CONSUMER_SECRET')
+    args = parser.parse_args()
+    lightsaber, path, parts = generate_lightsaber(hilt=args.hilt, blade=args.blade, pommel=args.pommel, button=args.button)
 
-access_token = os.getenv('ACCESS_TOKEN')
-access_token_secret = os.getenv('ACCESS_TOKEN_SECRET')
+    if args.open:
+        import subprocess
+        subprocess.call(['open', path])
+    print(lightsaber)
+    if not args.debug:
+        consumer_key = os.getenv('CONSUMER_KEY')
+        consumer_secret = os.getenv('CONSUMER_SECRET')
 
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
-api = tweepy.API(auth)
+        access_token = os.getenv('ACCESS_TOKEN')
+        access_token_secret = os.getenv('ACCESS_TOKEN_SECRET')
 
-lightsaber, path, parts = generate_lightsaber()
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        auth.set_access_token(access_token, access_token_secret)
+        api = tweepy.API(auth)
 
-tweet_text = generate_tweet_text(parts[0], parts[1], parts[2])
+        tweet_text = generate_tweet_text(parts[0], parts[1], parts[2])
 
-media = api.media_upload(path)
-api.update_status(status=tweet_text, media_ids=[media.media_id,])
+        media = api.media_upload(path)
+        api.update_status(status=tweet_text, media_ids=[media.media_id,])

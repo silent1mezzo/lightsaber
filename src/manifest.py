@@ -13,7 +13,7 @@ MANIFEST = {
                 "secondary": (141,141,141), #8d8d8d
                 "tertiary": (180, 97, 19), #b46113
             },
-            "length": 28,
+            "length": 24,
             "materials": "Alloy metal/Salvaged materials"
         },
         "h2": {
@@ -29,7 +29,7 @@ MANIFEST = {
                 "secondary": (0, 0, 0), #000000
                 "tertiary": (212, 175, 55) #000000
             },
-            "length": 28,
+            "length": 24,
             "materials": "Alloy metal and carbon composite"
         },
          "h3": {
@@ -45,7 +45,7 @@ MANIFEST = {
                 "secondary": (0, 0, 0), #000000
                 "tertiary": (180, 97, 19), #b46113
             },
-            "length": 28,
+            "length": 24,
             "materials": "Alloy metal"
         },
         "h4": {
@@ -61,7 +61,23 @@ MANIFEST = {
                 "secondary": (157, 157, 157), #9d9d9d
                 "tertiary": (180, 97, 19), #b46113
             },
-            "length": 15,
+            "length": 13,
+            "materials": "Alloy metal"
+        },
+        "h5": {
+            "offsets": {
+                "blade": 0,
+                "button": {
+                    "x": (8, 8),
+                    "y": (92, 105)
+                }
+            },
+            "colours": {
+                "primary": (111, 111, 111), #6f6f6f
+                "secondary": (0, 0, 0), #000000
+                "tertiary": (180, 97, 19), #b46113
+            },
+            "length": 24,
             "materials": "Alloy metal"
         }
     },
