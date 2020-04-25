@@ -79,7 +79,23 @@ MANIFEST = {
             },
             "length": 24,
             "materials": "Alloy metal"
-        }
+        },
+        "h6": {
+            "offsets": {
+                "blade": 2,
+                "button": {
+                    "x": (8, 9),
+                    "y": (112, 113)
+                }
+            },
+            "colours": {
+                "primary": (120, 120, 120), #787878
+                "secondary": (0, 0, 0), #000000
+                "tertiary": (180, 97, 19), #b46113
+            },
+            "length": 22,
+            "materials": "Alloy metal/Salvaged materials"
+        },
     },
     "blade": {
         "b1": {
@@ -120,7 +136,7 @@ MANIFEST = {
         },
          "b8": {
             "colour": "Orange",
-            "crystal": "Ilum crystal",
+            "crystal": ["Ilum crystal", "Ultima Pearl"],
             "type": "Sith"
         },
         "b9": {
@@ -141,6 +157,9 @@ MANIFEST = {
         },
         "p4": {
             "length": 8,
+        },
+        "p5": {
+            "length": 5,
         },
     },
     # These are lightsabers for a specific Jedi or Sith. Should use their name instead of 

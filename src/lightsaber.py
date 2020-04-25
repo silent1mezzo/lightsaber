@@ -36,13 +36,17 @@ def generate_tweet_text(hilt, blade, pommel):
     if type(title) is list:
         title = random.choice(title)
 
+    crystal = MANIFEST['blade'][blade]['crystal']
+    if type(crystal) is list:
+        crystal = random.choice(crystal)
+
     name = f"{title} {random.choice(NAMES)}"
 
     tweet = f'''Owner: {name}
 Hilt Length: {total_length} cm
 Blade Length: {blade_length} cm
 Blade Colour: {MANIFEST['blade'][blade]['colour']}
-Kyber Crystal: {MANIFEST['blade'][blade]['crystal']}
+Kyber Crystal: {crystal}
 
 #StarWars
 '''
@@ -185,8 +189,11 @@ if __name__ == "__main__":
     if args.open:
         import subprocess
         subprocess.call(['open', path])
-    print(lightsaber)
-    if not args.debug:
+
+    tweet_text = generate_tweet_text(parts[0], parts[1], parts[2])
+    if args.debug:
+        print(tweet_text)
+    else:
         consumer_key = os.getenv('CONSUMER_KEY')
         consumer_secret = os.getenv('CONSUMER_SECRET')
 
@@ -196,8 +203,6 @@ if __name__ == "__main__":
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
         api = tweepy.API(auth)
-
-        tweet_text = generate_tweet_text(parts[0], parts[1], parts[2])
 
         media = api.media_upload(path)
         api.update_status(status=tweet_text, media_ids=[media.media_id,])
