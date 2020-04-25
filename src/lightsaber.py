@@ -98,6 +98,9 @@ def fetch_name(path):
 
 def resize_image(image):
     image_w, image_h = image.size
+
+    # Don't allow the height of the image to go above 130px. Once scaled up this makes sure the blade doesn't go out of frame
+    image_h = min(image_h, 130)
     image = image.resize((image_w*4, image_h*4), Image.ANTIALIAS)
     return image, image.size
 
@@ -131,21 +134,17 @@ def generate_lightsaber(hilt, blade, button, pommel):
 
     blade = Image.open(blade_path, 'r')
     blade_w, blade_h = blade.size
-    #blade, (blade_w, blade_h) = resize_image(blade)
    
     hilt = Image.open(hilt_path, 'r')
     hilt_w, hilt_h = hilt.size
-    #hilt, (hilt_w, hilt_h) = resize_image(hilt)
 
     button = Image.open(button_path, 'r')
     button = convert_colours(button, hilt_name)
     button_w, button_h = button.size
-    #button, (button_w, button_h) = resize_image(button)
 
     pommel = Image.open(pommel_path, 'r')
     pommel = convert_colours(pommel, hilt_name)
     pommel_w, pommel_h = pommel.size
-    #pommel, (pommel_w, pommel_h) = resize_image(pommel)
     
     max_width = max([blade_w, hilt_w, button_w, pommel_w])
   

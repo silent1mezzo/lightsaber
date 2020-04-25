@@ -96,6 +96,22 @@ MANIFEST = {
             "length": 22,
             "materials": "Alloy metal/Salvaged materials"
         },
+        "h7": {
+            "offsets": {
+                "blade": 0,
+                "button": {
+                    "x": (8, 9),
+                    "y": (105, 113)
+                }
+            },
+            "colours": {
+                "primary": (192, 192, 192), #c0c0c0
+                "secondary": (255, 215, 0), #ffd700
+                "tertiary": (0, 0, 0), #000000
+            },
+            "length": 22,
+            "materials": "Alloy metal and Gold"
+        },
     },
     "blade": {
         "b1": {
@@ -159,6 +175,9 @@ MANIFEST = {
             "length": 8,
         },
         "p5": {
+            "length": 5,
+        },
+        "p6": {
             "length": 5,
         },
     },
