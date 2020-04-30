@@ -48,7 +48,7 @@ Blade Length: {blade_length} cm
 Blade Colour: {MANIFEST['blade'][blade]['colour']}
 Kyber Crystal: {crystal}
 
-#StarWars
+#StarWars #lightsaber #{title}
 '''
 
     return tweet
