@@ -112,6 +112,22 @@ MANIFEST = {
             "length": 22,
             "materials": "Alloy metal and Gold"
         },
+         "h8": {
+            "offsets": {
+                "blade": 0,
+                "button": {
+                    "x": (8, 9),
+                    "y": (100, 111)
+                }
+            },
+            "colours": {
+                "primary": (216,216,216), #d8d8d8
+                "secondary": (180, 97, 19), #b46113
+                "tertiary": (0, 0, 0), #000000
+            },
+            "length": 24,
+            "materials": "Alloy metal/Copper"
+        },
     },
     "blade": {
         "b1": {
@@ -179,6 +195,9 @@ MANIFEST = {
         },
         "p6": {
             "length": 5,
+        },
+        "p7": {
+            "length": 8,
         },
     },
     # These are lightsabers for a specific Jedi or Sith. Should use their name instead of 
