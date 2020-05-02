@@ -1,4 +1,5 @@
 import os, random
+from pathlib import Path, PurePath
 from PIL import Image
 import numpy as np
 import argparse
@@ -6,21 +7,18 @@ import tweepy
 from manifest import MANIFEST
 from name import NAMES
 
-IMAGE_PATH = os.path.join(os.path.dirname(__file__), '../images')
-BLADE_PATH = "{}/blades".format(IMAGE_PATH)
-HILT_PATH = "{}/hilts".format(IMAGE_PATH)
-BUTTON_PATH = "{}/buttons".format(IMAGE_PATH)
-POMMEL_PATH = "{}/pommels".format(IMAGE_PATH)
-OUTPUT_PATH = "{}/lightsabers".format(IMAGE_PATH)
+IMAGE_PATH = Path('../images')
+BLADE_PATH = IMAGE_PATH / 'blades'
+HILT_PATH = IMAGE_PATH / 'hilts'
+BUTTON_PATH = IMAGE_PATH / 'buttons'
+POMMEL_PATH = IMAGE_PATH / 'pommels'
+OUTPUT_PATH = IMAGE_PATH / 'lightsabers'
 
 AVERAGE_HILT_LENGTH = 25
 AVERAGE_POMMEL_LENGTH = 3
 AVERAGE_BLADE_LENGTH = 90
 
 def generate_tweet_text(hilt, blade, pommel):
-    hilt = hilt.split('.')[0]
-    blade = blade.split('.')[0]
-    pommel = pommel.split('.')[0]
     hilt_details = MANIFEST['hilt'][hilt]
     blade_details = MANIFEST['blade'][blade]
     pommel_details = MANIFEST['pommel'][pommel]
@@ -54,8 +52,7 @@ Kyber Crystal: {crystal}
     return tweet
 
 def convert_colours(img, hilt):
-    hilt_name = hilt.split('.')[0]
-    MANIFEST['hilt'][hilt_name]['offsets']['blade']
+    MANIFEST['hilt'][hilt]['offsets']['blade']
     img = img.convert('RGBA')
     data = np.array(img)
 
@@ -64,37 +61,37 @@ def convert_colours(img, hilt):
     secondary = (red == 0) & (blue == 255) & (green == 0)
     tertiary = (red == 0) & (blue == 0) & (green == 255)
 
-    data[..., :-1][primary.T] = MANIFEST['hilt'][hilt_name]['colours']['primary']
-    data[..., :-1][secondary.T] = MANIFEST['hilt'][hilt_name]['colours']['secondary']
-    data[..., :-1][tertiary.T] = MANIFEST['hilt'][hilt_name]['colours']['tertiary']
+    data[..., :-1][primary.T] = MANIFEST['hilt'][hilt]['colours']['primary']
+    data[..., :-1][secondary.T] = MANIFEST['hilt'][hilt]['colours']['secondary']
+    data[..., :-1][tertiary.T] = MANIFEST['hilt'][hilt]['colours']['tertiary']
 
     return Image.fromarray(data)
 
 def fetch_lightsaber_parts(hilt, blade, button, pommel):
     if hilt != '.':
-        hilt = "{}/{}".format(HILT_PATH, hilt)
+        hilt = Path(f"{HILT_PATH}/{hilt}")
     else:
-        hilt = "{}/{}".format(HILT_PATH, random.choice(os.listdir(HILT_PATH)))
+        hilt = Path(f"{HILT_PATH}/{random.choice(os.listdir(HILT_PATH))}")
 
     if blade != '.':
-        blade = "{}/{}".format(BLADE_PATH, blade)
+        blade = Path(f"{BLADE_PATH}/{blade}")
     else:
-        blade = "{}/{}".format(BLADE_PATH, random.choice(os.listdir(BLADE_PATH)))
+        blade = Path(f"{BLADE_PATH}/{random.choice(os.listdir(BLADE_PATH))}")
 
     if button != '.':
-        button = "{}/{}".format(BUTTON_PATH, button)
+        button = Path(f"{BUTTON_PATH}/{button}")
     else:
-        button = "{}/{}".format(BUTTON_PATH, random.choice(os.listdir(BUTTON_PATH)))
+        button = Path(f"{BUTTON_PATH}/{random.choice(os.listdir(BUTTON_PATH))}")
 
     if pommel != '.':
-        pommel = "{}/{}".format(POMMEL_PATH, pommel)
+        pommel = Path(f"{POMMEL_PATH}/{pommel}")
     else:
-        pommel = "{}/{}".format(POMMEL_PATH, random.choice(os.listdir(POMMEL_PATH)))
+        pommel = Path(f"{POMMEL_PATH}/{random.choice(os.listdir(POMMEL_PATH))}")
 
     return (blade, hilt, button, pommel)
 
 def fetch_name(path):
-    return path.split('/')[-1]
+    return PurePath(path).stem
 
 def resize_image(image):
     image_w, image_h = image.size
@@ -105,14 +102,11 @@ def resize_image(image):
     return image, image.size
 
 def get_hilt_offset(hilt):
-    hilt_name = hilt.split('.')[0]
-    return MANIFEST['hilt'][hilt_name]['offsets']['blade']
+    return MANIFEST['hilt'][hilt]['offsets']['blade']
 
 def get_button_offset(hilt, pommel, button_w, button_h):
-    hilt_name = hilt.split('.')[0]
-    pommel_name = pommel.split('.')[0]
-    between_x = MANIFEST['hilt'][hilt_name]['offsets']['button']['x']
-    between_y = MANIFEST['hilt'][hilt_name]['offsets']['button']['y']
+    between_x = MANIFEST['hilt'][hilt]['offsets']['button']['x']
+    between_y = MANIFEST['hilt'][hilt]['offsets']['button']['y']
     return (random.randint(between_x[0], between_x[1]), random.randint(between_y[0], between_y[1]))
 
 def generate_lightsaber(hilt, blade, button, pommel):
@@ -122,7 +116,8 @@ def generate_lightsaber(hilt, blade, button, pommel):
     pommel_name = pommel
     output_filename = ''
 
-    while blade_name.startswith('.') == True or hilt_name.startswith('.') == True or button_name.startswith('.') == True or pommel_name.startswith('.') == True or f"{output_filename}.png" in os.listdir(OUTPUT_PATH):
+
+    while blade_name.startswith('.') == True or hilt_name.startswith('.') == True or button_name.startswith('.') == True or pommel_name.startswith('.') == True or Path(f"{OUTPUT_PATH}/{output_filename}.png").exists():
         blade_path, hilt_path, button_path, pommel_path = fetch_lightsaber_parts(hilt, blade, button, pommel)
         blade_name = fetch_name(blade_path)
         hilt_name = fetch_name(hilt_path)
@@ -130,7 +125,7 @@ def generate_lightsaber(hilt, blade, button, pommel):
         pommel_name = fetch_name(pommel_path)
 
         # Create the filename here so we can check for uniqueness
-        output_filename = f"{hilt_name.split('.')[0]}{blade_name.split('.')[0]}{button_name.split('.')[0]}{pommel_name.split('.')[0]}"
+        output_filename = f"{hilt_name}{blade_name}{button_name}{pommel_name}"
 
     blade = Image.open(blade_path, 'r')
     blade_w, blade_h = blade.size
