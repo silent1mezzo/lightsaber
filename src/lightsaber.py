@@ -7,7 +7,7 @@ import tweepy
 from manifest import MANIFEST
 from name import NAMES
 
-IMAGE_PATH = Path('../images')
+IMAGE_PATH = Path(__file__).parent.absolute() / '../images'
 BLADE_PATH = IMAGE_PATH / 'blades'
 HILT_PATH = IMAGE_PATH / 'hilts'
 BUTTON_PATH = IMAGE_PATH / 'buttons'
