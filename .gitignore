@@ -27,6 +27,8 @@ share/python-wheels/
 *.egg
 MANIFEST
 .DS_Store
+node_modules/
+package-lock.json
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -130,4 +132,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-images/lightsabers/
+images/lightsabers/*
+!images/lightsabers/.output
