@@ -170,7 +170,7 @@ def generate_lightsaber(hilt, blade, button, pommel):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--debug', action='store_true', help='Should this be run in debug mode')
+    parser.add_argument('--tweet', action='store_true', help='Should this tweet out the results')
     parser.add_argument('--open', action='store_true', help='Open the files automatically')
     parser.add_argument('--hilt', nargs='?', default='.', help='Use a specific hilt')
     parser.add_argument('--blade', nargs='?', default='.', help='Use a specific blade')
@@ -185,7 +185,7 @@ if __name__ == "__main__":
         subprocess.call(['open', path])
 
     tweet_text = generate_tweet_text(parts[0], parts[1], parts[2])
-    if args.debug:
+    if not args.tweet:
         print(tweet_text)
     else:
         consumer_key = os.getenv('CONSUMER_KEY')
