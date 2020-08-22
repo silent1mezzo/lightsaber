@@ -1,4 +1,6 @@
+import os
 import random
+from pathlib import Path, PurePath
 
 
 def get_title(blade_details):
@@ -15,3 +17,12 @@ def get_crystal(blade_details):
         crystal = random.choice(crystal)
 
     return crystal
+
+
+def get_path(part, path):
+    if part != ".":
+        part = Path(f"{path}/{part}")
+    else:
+        part = Path(f"{path}/{random.choice(os.listdir(path))}")
+
+    return part

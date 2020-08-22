@@ -6,7 +6,7 @@ import argparse
 import tweepy
 from manifest import MANIFEST
 from name import NAMES
-from utils import get_title, get_crystal
+from utils import get_crystal, get_path, get_title
 
 IMAGE_PATH = Path(__file__).parent.absolute() / "../images"
 BLADE_PATH = IMAGE_PATH / "blades"
@@ -68,25 +68,10 @@ def convert_colours(img, hilt):
 
 
 def fetch_lightsaber_parts(hilt, blade, button, pommel):
-    if hilt != ".":
-        hilt = Path(f"{HILT_PATH}/{hilt}")
-    else:
-        hilt = Path(f"{HILT_PATH}/{random.choice(os.listdir(HILT_PATH))}")
-
-    if blade != ".":
-        blade = Path(f"{BLADE_PATH}/{blade}")
-    else:
-        blade = Path(f"{BLADE_PATH}/{random.choice(os.listdir(BLADE_PATH))}")
-
-    if button != ".":
-        button = Path(f"{BUTTON_PATH}/{button}")
-    else:
-        button = Path(f"{BUTTON_PATH}/{random.choice(os.listdir(BUTTON_PATH))}")
-
-    if pommel != ".":
-        pommel = Path(f"{POMMEL_PATH}/{pommel}")
-    else:
-        pommel = Path(f"{POMMEL_PATH}/{random.choice(os.listdir(POMMEL_PATH))}")
+    hilt = get_path(hilt, HILT_PATH)
+    blade = get_path(blade, BLADE_PATH)
+    button = get_path(button, BUTTON_PATH)
+    pommel = get_path(pommel, POMMEL_PATH)
 
     return (blade, hilt, button, pommel)
 
