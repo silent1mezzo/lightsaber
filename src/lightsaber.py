@@ -6,6 +6,7 @@ import argparse
 import tweepy
 from manifest import MANIFEST
 from name import NAMES
+from utils import get_title, get_crystal
 
 IMAGE_PATH = Path(__file__).parent.absolute() / '../images'
 BLADE_PATH = IMAGE_PATH / 'blades'
@@ -30,13 +31,10 @@ def generate_tweet_text(hilt, blade, pommel):
     average_length = AVERAGE_HILT_LENGTH + AVERAGE_POMMEL_LENGTH
     blade_length = int(AVERAGE_BLADE_LENGTH * (total_length / average_length))
 
-    title = blade_details['type']
-    if type(title) is list:
-        title = random.choice(title)
+    title = get_title(blade_details)
 
-    crystal = MANIFEST['blade'][blade]['crystal']
-    if type(crystal) is list:
-        crystal = random.choice(crystal)
+    crystal = get_crystal(blade_details)
+    
 
     name = f"{title} {random.choice(NAMES)}"
 
