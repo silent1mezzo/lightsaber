@@ -1,19 +1,17 @@
 from src.utils import get_title, get_crystal
 
+
 class TestUtils:
-    JEDI = 'Jedi'
-    SITH = 'Sith'
-    OBSIDIAN = 'Obsidian'
-    GEM = 'Dragite gem'
+    JEDI = "Jedi"
+    SITH = "Sith"
+    OBSIDIAN = "Obsidian"
+    GEM = "Dragite gem"
 
     single_type = {
-        'type': JEDI,
-        'crystal': OBSIDIAN,
+        "type": JEDI,
+        "crystal": OBSIDIAN,
     }
-    array_type = {
-        'type': [JEDI, SITH],
-        'crystal': [OBSIDIAN, GEM]
-    }
+    array_type = {"type": [JEDI, SITH], "crystal": [OBSIDIAN, GEM]}
 
     def test_get_string_title(self):
         name = get_title(self.single_type)
