@@ -4,6 +4,7 @@ from PIL import Image
 import numpy as np
 import argparse
 import tweepy
+import sentry_sdk
 from manifest import MANIFEST
 from name import NAMES
 from utils import get_crystal, get_path, get_title
@@ -18,6 +19,8 @@ OUTPUT_PATH = IMAGE_PATH / "lightsabers"
 AVERAGE_HILT_LENGTH = 25
 AVERAGE_POMMEL_LENGTH = 3
 AVERAGE_BLADE_LENGTH = 90
+
+sentry_sdk.init(dsn=os.getenv("SENTRY_DSN"), traces_sample_rate=1.0)
 
 
 def generate_tweet_text(hilt, blade, pommel):
