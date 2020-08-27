@@ -24,6 +24,7 @@ export CONSUMER_KEY = ""
 export CONSUMER_SECRET = ""
 export ACCESS_TOKEN = ""
 export ACCESS_TOKEN_SECRET = ""
+export SENTRY_DSN = ""
 ```
 
 Then run it with the --tweet argument
