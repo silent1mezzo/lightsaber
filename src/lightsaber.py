@@ -1,6 +1,7 @@
 import os, random
 from pathlib import Path, PurePath
 from PIL import Image
+from PIL import ImageOps
 import numpy as np
 import argparse
 import tweepy
@@ -20,7 +21,15 @@ AVERAGE_HILT_LENGTH = 25
 AVERAGE_POMMEL_LENGTH = 3
 AVERAGE_BLADE_LENGTH = 90
 
-sentry_sdk.init(dsn=os.getenv("SENTRY_DSN"), traces_sample_rate=1.0)
+DOUBLE_BLADE_CHANCE = 0.20
+
+USE_SENTRY = False
+
+if os.getenv("SENTRY_DSN"):
+    USE_SENTRY = True
+    sentry_sdk.init(
+        dsn=os.getenv("SENTRY_DSN"), traces_sample_rate=1.0,
+    )
 
 
 def generate_tweet_text(hilt, blade, pommel):
@@ -70,7 +79,7 @@ def convert_colours(img, hilt):
     return Image.fromarray(data)
 
 
-def fetch_lightsaber_parts(hilt, blade, button, pommel):
+def fetch_lightsaber_images(hilt, blade, button, pommel):
     hilt = get_path(hilt, HILT_PATH)
     blade = get_path(blade, BLADE_PATH)
     button = get_path(button, BUTTON_PATH)
@@ -119,7 +128,7 @@ def generate_lightsaber(hilt, blade, button, pommel):
         or pommel_name.startswith(".") == True
         or Path(f"{OUTPUT_PATH}/{output_filename}.png").exists()
     ):
-        blade_path, hilt_path, button_path, pommel_path = fetch_lightsaber_parts(
+        blade_path, hilt_path, button_path, pommel_path = fetch_lightsaber_images(
             hilt, blade, button, pommel
         )
         blade_name = fetch_name(blade_path)
@@ -146,27 +155,52 @@ def generate_lightsaber(hilt, blade, button, pommel):
 
     max_width = max([blade_w, hilt_w, button_w, pommel_w])
 
-    saber = Image.new("RGB", (max_width, blade_h + hilt_h + pommel_h), (255, 255, 255))
-    bg_w, bg_h = saber.size
-
-    pommel_offset = pommel_h
-    hilt_offset = get_hilt_offset(hilt_name) - pommel_offset
-    button_offset = get_button_offset(hilt_name, pommel_name, button_w, button_h)
-    blade_offset = ((bg_w - blade_w) // 2, (bg_h - blade_h - hilt_h + hilt_offset))
-    hilt_offset = ((bg_w - hilt_w) // 2, bg_h - hilt_h - pommel_offset)
-    pommel_offset = ((bg_w - pommel_w) // 2, bg_h - pommel_h)
-
-    # Paste all of the components onto the background
-    saber.paste(blade, blade_offset, mask=blade)
-    saber.paste(hilt, hilt_offset, mask=hilt)
-    saber.paste(pommel, pommel_offset, mask=pommel)
-    saber.paste(button, button_offset, mask=button)
-
-    saber, (saber_w, saber_h) = resize_image(saber)
-
     img = Image.new("RGB", (1024, 512), (255, 255, 255))
     img_w, img_h = img.size
-    img.paste(saber, ((img_w - saber_w) // 2, img_h - saber_h))
+
+    if random.random() <= DOUBLE_BLADE_CHANCE:
+        saber = Image.new("RGB", (max_width, blade_h + hilt_h), (255, 255, 255))
+        output_filename = f"d{output_filename}"
+        bg_w, bg_h = saber.size
+
+        hilt_offset = get_hilt_offset(hilt_name)
+        button_offset = get_button_offset(hilt_name, pommel_name, button_w, button_h)
+        blade_offset = ((bg_w - blade_w) // 2, (bg_h - blade_h - hilt_h + hilt_offset))
+        hilt_offset = ((bg_w - hilt_w) // 2, bg_h - hilt_h)
+
+        saber.paste(blade, blade_offset, mask=blade)
+        saber.paste(hilt, hilt_offset, mask=hilt)
+        saber.paste(button, button_offset, mask=button)
+        saber1 = saber.rotate(270, expand=True)
+        saber2 = ImageOps.mirror(saber1)
+        saber1, (saber1_w, saber1_h) = resize_image(saber1)
+        saber2, (saber2_w, saber2_h) = resize_image(saber2)
+
+        img.paste(saber1, (img_w // 2, (img_h - saber1_h) // 2))
+        img.paste(saber2, (img_w // 2 - saber2_w, (img_h - saber2_h) // 2))
+    else:
+        saber = Image.new(
+            "RGB", (max_width, blade_h + hilt_h + pommel_h), (255, 255, 255)
+        )
+        bg_w, bg_h = saber.size
+
+        pommel_offset = pommel_h
+        hilt_offset = get_hilt_offset(hilt_name) - pommel_offset
+        button_offset = get_button_offset(hilt_name, pommel_name, button_w, button_h)
+        blade_offset = ((bg_w - blade_w) // 2, (bg_h - blade_h - hilt_h + hilt_offset))
+        hilt_offset = ((bg_w - hilt_w) // 2, bg_h - hilt_h - pommel_offset)
+        pommel_offset = ((bg_w - pommel_w) // 2, bg_h - pommel_h)
+
+        # Paste all of the components onto the background
+        saber.paste(blade, blade_offset, mask=blade)
+        saber.paste(hilt, hilt_offset, mask=hilt)
+        saber.paste(pommel, pommel_offset, mask=pommel)
+        saber.paste(button, button_offset, mask=button)
+
+        saber, (saber_w, saber_h) = resize_image(saber)
+
+        img.paste(saber, ((img_w - saber_w) // 2, img_h - saber_h))
+
     img.save("{}/{}.png".format(OUTPUT_PATH, output_filename))
 
     return (
@@ -177,7 +211,7 @@ def generate_lightsaber(hilt, blade, button, pommel):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process some integers.")
+    parser = argparse.ArgumentParser(description="Generate a lightsaber")
     parser.add_argument(
         "--tweet", action="store_true", help="Should this tweet out the results"
     )
@@ -192,8 +226,18 @@ if __name__ == "__main__":
     parser.add_argument(
         "--button", nargs="?", default=".", help="Use a specific button"
     )
+    parser.add_argument(
+        "--double",
+        nargs="?",
+        default=0.2,
+        help="Chance to generate a double blade [0, 1.0)",
+        type=float,
+    )
 
     args = parser.parse_args()
+
+    DOUBLE_BLADE_CHANCE = args.double
+
     lightsaber, path, parts = generate_lightsaber(
         hilt=args.hilt, blade=args.blade, pommel=args.pommel, button=args.button
     )
