@@ -22,6 +22,7 @@ AVERAGE_POMMEL_LENGTH = 3
 AVERAGE_BLADE_LENGTH = 90
 
 DOUBLE_BLADE_CHANCE = 0.20
+DOUBLE_BLADE = False
 
 USE_SENTRY = False
 
@@ -43,6 +44,10 @@ def generate_tweet_text(hilt, blade, pommel):
     total_length = hilt_length + pommel_length
     average_length = AVERAGE_HILT_LENGTH + AVERAGE_POMMEL_LENGTH
     blade_length = int(AVERAGE_BLADE_LENGTH * (total_length / average_length))
+
+    if DOUBLE_BLADE:
+        total_length = hilt_length * 2
+        blade_length *= 2
 
     title = get_title(blade_details)
 
@@ -159,6 +164,8 @@ def generate_lightsaber(hilt, blade, button, pommel):
     img_w, img_h = img.size
 
     if random.random() <= DOUBLE_BLADE_CHANCE:
+        global DOUBLE_BLADE
+        DOUBLE_BLADE = True
         saber = Image.new("RGB", (max_width, blade_h + hilt_h), (255, 255, 255))
         output_filename = f"d{output_filename}"
         bg_w, bg_h = saber.size
