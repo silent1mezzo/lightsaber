@@ -24,6 +24,9 @@ AVERAGE_BLADE_LENGTH = 90
 DOUBLE_BLADE_CHANCE = 0.20
 DOUBLE_BLADE = False
 
+DUAL_BLADE_CHANCE = 0.40
+DUAL_BLADE = False
+
 USE_SENTRY = False
 
 if os.getenv("SENTRY_DSN"):
@@ -185,6 +188,8 @@ def generate_lightsaber(hilt, blade, button, pommel):
 
         img.paste(saber1, (img_w // 2, (img_h - saber1_h) // 2))
         img.paste(saber2, (img_w // 2 - saber2_w, (img_h - saber2_h) // 2))
+    elif random.random() <= DUAL_BLADE_CHANCE:
+        pass
     else:
         saber = Image.new(
             "RGB", (max_width, blade_h + hilt_h + pommel_h), (255, 255, 255)
@@ -238,6 +243,13 @@ if __name__ == "__main__":
         nargs="?",
         default=0.2,
         help="Chance to generate a double blade [0, 1.0)",
+        type=float,
+    )
+    parser.add_argument(
+        "--dual",
+        nargs="?",
+        default=0.2,
+        help="Chance to generate dual lightsabers [0, 1.0)",
         type=float,
     )
 
